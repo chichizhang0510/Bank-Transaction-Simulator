@@ -226,13 +226,6 @@ function updateUI(account) {
   calcSummary(account);
 }
 
-// const day = `${now.getDate()}`.padStart(2, 0);
-// const month = `${now.getMonth() + 1}`.padStart(2, 0);
-// const year = `${now.getFullYear()}`;
-// const hour = `${now.getHours()}`.padStart(2, 0);
-// const minute = `${now.getMinutes()}`.padStart(2, 0);
-// labelDate.textContent = `${day}/${month}/${year}, ${hour}:${minute}`;
-
 // login
 let currentAccount;
 btnLogin.addEventListener("click", function (e) {
@@ -320,12 +313,12 @@ btnLoan.addEventListener("click", function (e) {
     amount > 0 &&
     currentAccount.movements.some((move) => move >= amount * 0.1)
   ) {
-    currentAccount.movements.push(amount);
-
-    // add date
-    currentAccount.movementsDate.push(new Date());
-
-    updateUI(currentAccount);
+    setTimeout(() => {
+      currentAccount.movements.push(amount);
+      // add date
+      currentAccount.movementsDate.push(new Date());
+      updateUI(currentAccount);
+    }, 3000);
   }
 });
 
