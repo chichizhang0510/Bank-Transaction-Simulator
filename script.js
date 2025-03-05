@@ -226,8 +226,29 @@ function updateUI(account) {
   calcSummary(account);
 }
 
+const startLogOutTimer = function () {
+  let time = 5 * 60;
+  let timer = setInterval(function () {
+    const sec = time % 60;
+    const min = (time - sec) / 60;
+    labelTimer.textContent = `${String(min).padStart(2, 0)}:${String(
+      sec
+    ).padStart(2, 0)}`;
+
+    if (time === 0) {
+      containerApp.style.opacity = 0;
+      labelWelcome.textContent = "Log in to get started";
+      clearInterval(timer);
+    }
+
+    time--;
+  }, 1000);
+
+  return timer;
+};
+
 // login
-let currentAccount;
+let currentAccount, timer;
 btnLogin.addEventListener("click", function (e) {
   e.preventDefault();
   currentAccount = accounts.find(
@@ -251,7 +272,7 @@ btnLogin.addEventListener("click", function (e) {
       second: "2-digit",
       hour12: false,
     };
-    // const locale = navigator.language;
+
     const locale = currentAccount.locale;
     const dateShouldShow = new Intl.DateTimeFormat(locale, options).format(now);
     labelDate.textContent = dateShouldShow;
@@ -260,6 +281,9 @@ btnLogin.addEventListener("click", function (e) {
 
     inputLoginUsername.value = inputLoginPin.value = "";
     inputLoginPin.blur();
+
+    if (timer) clearInterval(timer);
+    timer = startLogOutTimer();
   }
 });
 
@@ -284,6 +308,9 @@ btnTransfer.addEventListener("click", function (e) {
     receiverAcc.movementsDate.push(new Date());
 
     updateUI(currentAccount);
+
+    clearInterval(timer);
+    timer = startLogOutTimer();
   }
 });
 
@@ -318,6 +345,8 @@ btnLoan.addEventListener("click", function (e) {
       // add date
       currentAccount.movementsDate.push(new Date());
       updateUI(currentAccount);
+      clearInterval(timer);
+      timer = startLogOutTimer();
     }, 3000);
   }
 });
